@@ -1,9 +1,11 @@
 // pages/api/members.js
 
-import { NextApiRequest, NextApiResponse } from 'next'
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(req, res) {
-  const filterRole = req.query.filter; // This is the role you want to filter by
+  const nameFilter = req.query.name;
+  const roleFilter = req.query.role;
+  const departmentFilter = req.query.department;
 
   const rolesResponse = await fetch('https://discord.com/api/guilds/961850793202450432/roles', {
     headers: {
@@ -11,9 +13,9 @@ export default async function handler(req, res) {
       'Content-Type': 'application/json'
     }
   });
-  
+
   const rolesData = await rolesResponse.json();
-  const roles = Object.fromEntries(rolesData.map(role => [role.id, {name: role.name, position: role.position}]));
+  const roles = Object.fromEntries(rolesData.map(role => [role.id, { name: role.name, position: role.position }]));
 
   const membersResponse = await fetch('https://discord.com/api/guilds/961850793202450432/members?limit=1000', {
     headers: {
@@ -21,13 +23,12 @@ export default async function handler(req, res) {
       'Content-Type': 'application/json'
     }
   });
-  
+
   const membersData = await membersResponse.json();
 
   let members = membersData
-    .filter(member => member.user.id !== '1093067580471787521' && !member.user.bot) // Ignore specific user and all bots
+    .filter(member => member.user.id !== '1093067580471787521' && !member.user.bot)
     .map(member => {
-      // Find the role with the highest position
       let highestRole = member.roles.reduce((highest, roleId) => {
         const role = roles[roleId];
         if (!role) return highest;
@@ -39,12 +40,22 @@ export default async function handler(req, res) {
         role: highestRole ? highestRole.name : 'No role',
         rolePosition: highestRole ? highestRole.position : -1,
         name: member.nick ? member.nick : member.user.username,
+        joinedAt: member.joined_at,
+        department: member.department // Assuming you have a department property in your data
       };
     });
 
-  // If filterRole is specified, filter out members that don't have the specified role
-  if (filterRole) {
-    members = members.filter(member => member.role.toLowerCase().replace(/\s+/g, '-') === filterRole.toLowerCase());
+  // Apply filters
+  if (nameFilter) {
+    members = members.filter(member => member.name.toLowerCase().includes(nameFilter.toLowerCase()));
+  }
+
+  if (roleFilter) {
+    members = members.filter(member => member.role.toLowerCase().includes(roleFilter.toLowerCase()));
+  }
+
+  if (departmentFilter) {
+    members = members.filter(member => member.department.toLowerCase() === departmentFilter.toLowerCase());
   }
 
   // Sort members by role position in descending order

@@ -3,8 +3,11 @@ body {
    padding: 0;
    margin: 0;
    font-family: 'Inter', sans-serif;
+   color: white !important;
 }
 
 * {
    box-sizing: border-box;
+   color: rgb(200, 200, 200) !important;
+
 }

@@ -8,7 +8,7 @@ import {Divider,} from "@nextui-org/react";
 const Home: NextPage = () => {
    return (
       <Layout>
-         <Nav />
+        
          <Divider/>
          <Box as="main">
             <StaffHome />

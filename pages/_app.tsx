@@ -2,6 +2,7 @@ import '../styles/globals.css';
 import type {AppProps} from 'next/app';
 import {createTheme, NextUIProvider} from '@nextui-org/react';
 import {ThemeProvider as NextThemesProvider} from 'next-themes';
+import {Nav} from '../components/navbar/navbar';
 
 const lightTheme = createTheme({
    type: 'light',
@@ -28,6 +29,7 @@ function MyApp({Component, pageProps}: AppProps) {
          }}
       >
          <NextUIProvider>
+            <Nav />
             <Component {...pageProps} />
          </NextUIProvider>
       </NextThemesProvider>
