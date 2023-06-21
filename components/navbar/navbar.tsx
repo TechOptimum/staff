@@ -9,7 +9,8 @@ import {
   Card,
 } from "@nextui-org/react";
 import React from "react";
-import { icons } from "./icons";
+import { BsFillSunFill } from "react-icons/bs";
+import { FaMoon } from "react-icons/fa";
 import { useTheme as useNextTheme } from "next-themes";
 import { useTheme } from "@nextui-org/react";
 import { motion } from "framer-motion";
@@ -33,43 +34,39 @@ export const Nav = () => {
   const { setTheme } = useNextTheme();
   const { isDark, type } = useTheme();
   const collapseItems = [
-    {name: "Main Website", url: "https://techoptimum.org"},
-    {name: "Dashboard", url: "https://dashboard.techoptimum.org"},
-    {name: "Staff Handbook", url: "https://techoptimum.notion.site/Staff-Handbook-afb659f99c614c1baad74adc18bf2def"},
-    {name: "The Team", url: "/team"},
-    {name: "Log Volunteer Hours", url: "/volunteer-hours"}
+    { name: "Main Website", url: "https://techoptimum.org" },
+    { name: "Dashboard", url: "https://dashboard.techoptimum.org" },
+    {
+      name: "Staff Handbook",
+      url: "https://techoptimum.notion.site/Staff-Handbook-afb659f99c614c1baad74adc18bf2def",
+    },
+    { name: "The Team", url: "/team" },
+    { name: "Log Volunteer Hours", url: "/volunteer-hours" },
   ];
   return (
     <Navbar variant="sticky">
       <Navbar.Brand>
         <Navbar.Toggle aria-label="toggle navigation" showIn="xs" />
         <Link href="/">
-        <Text h3 color="inherit">
-          Tech Optimum Staff Portal 
-        </Text>
+          <Text h3 color="inherit">
+            Tech Optimum Staff Portal
+          </Text>
         </Link>
-        <motion.div
-          variants={navbarVariants}
-          initial="hidden"
-          animate="show"
-        >
-        <Navbar.Content
-        variant={"highlight-rounded"}
-        enableCursorHighlight
-          hideIn="sm"
-          css={{
-            pl: "6rem",
-          }}
-        >
-          {collapseItems.map((item, index) => (
-            <motion.div
-              key={item.name}
-              variants={linkVariants}
-            >
-              <Navbar.Link  href={item.url}>{item.name}</Navbar.Link>
-            </motion.div>
-          ))}
-        </Navbar.Content>
+        <motion.div variants={navbarVariants} initial="hidden" animate="show">
+          <Navbar.Content
+            variant={"highlight-rounded"}
+            enableCursorHighlight
+            hideIn="sm"
+            css={{
+              pl: "6rem",
+            }}
+          >
+            {collapseItems.map((item, index) => (
+              <motion.div key={item.name} variants={linkVariants}>
+                <Navbar.Link href={item.url}>{item.name}</Navbar.Link>
+              </motion.div>
+            ))}
+          </Navbar.Content>
         </motion.div>
       </Navbar.Brand>
 
@@ -96,13 +93,20 @@ export const Nav = () => {
         </Navbar.CollapseItem>
       </Navbar.Collapse>
       <Navbar.Content>
-        <Navbar.Item hideIn={"xs"}>
-          <Switch
-            checked={isDark}
-            onChange={(e) => setTheme(e.target.checked ? "dark" : "light")}
-          />
+        <Navbar.Item hideIn="xs">
+          <div style={{ display: "flex", alignItems: "center" }}>
+            {isDark ? (
+              <FaMoon style={{marginTop: "0.2rem", paddingRight: "3" }} />
+            ) : (
+              <BsFillSunFill style={{marginTop: "0.2rem", paddingRight: "3" }} />
+            )}
+            <Switch
+              checked={isDark}
+              onChange={(e) => setTheme(e.target.checked ? "dark" : "light")}
+            />
+          </div>
         </Navbar.Item>
-      </Navbar.Content>     
+      </Navbar.Content>
     </Navbar>
   );
 };
