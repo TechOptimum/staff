@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Grid, Text } from "@nextui-org/react";
+import { Card, Grid, Text, Button, Divider } from "@nextui-org/react";
 import { CgWebsite } from "react-icons/cg";
 import { FaUserGraduate } from "react-icons/fa";
 import { AiOutlineUser } from "react-icons/ai";
@@ -13,21 +13,46 @@ import { RiUserSharedFill } from "react-icons/ri";
 import { RiUserShared2Fill } from "react-icons/ri";
 import { RiUserShared2Line } from "react-icons/ri";
 import { RiUserSharedLine } from "react-icons/ri";
+import { GiFireworkRocket} from "react-icons/gi";
+import { BsBriefcase} from "react-icons/bs";
 
 const departments = [
-  { id: "web-dev", name: "Web Dev", icon: <CgWebsite /> },
-  { id: "education", name: "Education", icon: <FaUserGraduate /> },
-  { id: "hr", name: "HR", icon: <AiOutlineUser /> },
-  { id: "social-media", name: "Social Media", icon: <RiTeamFill /> },
-  { id: "design", name: "Design", icon: <GiTeacher /> },
-  { id: "community", name: "Community", icon: <MdPeopleOutline /> },
-  { id: "outreach", name: "Outreach", icon: <BiGroup /> },
-  {
-    id: "hackathon-organizer",
-    name: "Hackathon Organizer",
-    icon: <IoMdPeople />,
+  { 
+    id: "web-dev", 
+    name: "Web Developer",
+    video: "https://youtu.be/RzabGYX2A-U",
+    icon: <CgWebsite /> 
   },
-  { id: "video-editor", name: "Video Editor", icon: <BsFillPeopleFill /> },
+  { 
+    id: "education",
+    name: "Education", 
+    video: "https://youtu.be/aVlSQAiB28w",
+    icon: <FaUserGraduate /> 
+  },
+  { 
+    id: "hr", 
+  name: "Human Resources", 
+  video: "https://youtu.be/F5oFiX8PSPs", 
+  icon: <AiOutlineUser /> 
+  },
+  { 
+    id: "social-media", 
+  name: "Social Media", 
+  video: "https://youtu.be/2mdzwmk7Q9c",
+  icon: <RiTeamFill /> 
+  },
+  { 
+    id: "design", 
+    name: "Design", 
+    icon: <GiTeacher /> 
+  },
+  { 
+    id: "outreach", 
+    name: "Outreach", 
+    icon: <BiGroup /> 
+  },
+
+
 ];
 
 const DepartmentCard = ({ department }) => (
@@ -38,20 +63,39 @@ const DepartmentCard = ({ department }) => (
         minWidth: "200px",
         justifyContent: "center",
         transition: "transform 0.2s",
-        "&:hover": { transform: "scale(1.05)"},
-
+        "&:hover": { transform: "scale(1.05)" },
       }}
-      isHoverable
-      isPressable
       variant="bordered"
     >
       <Card.Body>
-        <a href={`/department/${department.id}`}>
-          <Text size={25}>{department.icon}</Text>
-          <Text size={18} style={{ margin: 0, alignItems: "center" }}>
-            {department.name}
-          </Text>
-        </a>
+        <Text style={{textAlign: "center"}} size={25}>{department.icon}</Text>
+        <Text size={18} style={{ margin: 0, alignItems: "center", textAlign: "center"}}>
+          {department.name}
+        </Text>
+        <Grid.Container justify="space-around" marginTop="1rem">
+          <Button
+            isHoverable
+            is
+            style={{ margin: "20px" }}
+            auto
+            color="secondary"
+            href="#"
+            target="_blank"
+            icon={<GiFireworkRocket />}
+          >
+           Onboarding 
+          </Button>
+          <Button
+            auto
+            color="primary"
+            as="a"
+            href={`/department/${department.id}`}
+            target="_blank"
+            icon={<BsBriefcase />}
+          >
+            Handbook
+          </Button>
+        </Grid.Container>
       </Card.Body>
     </Card>
   </Grid>

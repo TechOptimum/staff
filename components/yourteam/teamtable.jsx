@@ -1,28 +1,23 @@
 import { useState, useEffect } from "react";
-import { Center, Table, Pagination, User, Dropdown } from "@nextui-org/react";
-import { useRouter } from "next/router";
+import { Input, Table, Pagination, User, Grid, Text } from "@nextui-org/react";
 
 export default function Teamtable() {
   const [teamMembers, setTeamMembers] = useState([]);
   const [page, setPage] = useState(1);
   const [nameFilter, setNameFilter] = useState("");
   const [roleFilter, setRoleFilter] = useState("");
-  const [departmentFilter, setDepartmentFilter] = useState("");
 
   const rowsPerPage = 9;
 
-  const router = useRouter();
-
   useEffect(() => {
     fetchMembers();
-  }, [nameFilter, roleFilter, departmentFilter]);
+  }, [nameFilter, roleFilter]);
 
   const fetchMembers = () => {
     const params = new URLSearchParams();
 
     if (nameFilter) params.append("name", nameFilter);
     if (roleFilter) params.append("role", roleFilter);
-    if (departmentFilter) params.append("department", departmentFilter);
 
     fetch(`/api/members?${params.toString()}`)
       .then((response) => response.json())
@@ -43,82 +38,86 @@ export default function Teamtable() {
     setRoleFilter(event.target.value);
   };
 
-  const handleDepartmentFilterChange = (selectedItems) => {
-    const selectedDepartment = selectedItems[selectedItems.length - 1];
-    setDepartmentFilter(selectedDepartment.value);
-  };
-
   const handlePaginationChange = (newPage) => {
     setPage(newPage);
   };
 
   return (
     <div
-      css={{
-        margin: "0 auto",
-        alignContent: "center",
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
         justifyContent: "center",
-        width: "50%",
-        maxWidth: "100%",
+        width: "100%",
+        margin: "0 auto",
+        padding: "1em",
+        boxSizing: "border-box",
       }}
     >
-      <input
-        type="text"
-        placeholder="Filter by name"
-        value={nameFilter}
-        onChange={handleNameFilterChange}
-      />
-      <input
-        type="text"
-        placeholder="Filter by role"
-        value={roleFilter}
-        onChange={handleRoleFilterChange}
-      />
-      <Dropdown
-        searchable
-        clearable
-        placeholder="Select Department"
-        selected={departmentFilter ? [departmentFilter] : []}
-        onChange={handleDepartmentFilterChange}
-      >
-        <Dropdown.Item value="web_development_team">
-          Web Development Team
-        </Dropdown.Item>
-        <Dropdown.Item value="hr_team">HR Team</Dropdown.Item>
-        {/* Add more department options here */}
-      </Dropdown>
-
-      <Table
-        striped
-        shadow={false}
-        color="secondary"
-        aria-label="Example pagination table"
-      >
-        <Table.Header>
-          <Table.Column>NAME</Table.Column>
-          <Table.Column>ROLE</Table.Column>
-          <Table.Column>JOINED AT</Table.Column>
-        </Table.Header>
-        <Table.Body>
-          {displayedMembers.map((member, index) => (
-            <Table.Row key={index}>
-              <Table.Cell>
-                <User
-                  name={member.name}
-                  description={`${member.user.username}#${member.user.discriminator}`}
-                  bordered
-                  color="blue"
-                  src={`https://cdn.discordapp.com/avatars/${member.user.id}/${member.user.avatar}.png`}
-                />
-              </Table.Cell>
-              <Table.Cell>{member.role}</Table.Cell>
-              <Table.Cell>
-                {new Date(member.joinedAt).toLocaleDateString()}
-              </Table.Cell>
-            </Table.Row>
-          ))}
-        </Table.Body>
-      </Table>
+      <Text style={{ marginBottom: "20px" }} h1>
+        Tech Optimum Team
+      </Text>
+      <Grid.Container justify="center">
+        <Input
+          clearable
+          underlined
+          labelPlaceholder="Filter by Name"
+          type="text"
+          value={nameFilter}
+          onChange={handleNameFilterChange}
+          color="primary"
+        />{" "}
+        <Input
+          clearable
+          underlined
+          labelPlaceholder="Filter by Role"
+          type="text"
+          value={roleFilter}
+          onChange={handleRoleFilterChange}
+          color="primary"
+        />{" "}
+      </Grid.Container>
+      <div style={{ overflowX: "auto", padding: "1rem 0" }}>
+        <Table
+          striped
+          sticked
+          shadow={false}
+          color="secondary"
+          aria-label="Example pagination table"
+        >
+          <Table.Header>
+            <Table.Column>NAME </Table.Column>
+            <Table.Column>ROLE </Table.Column>
+            <Table.Column>JOINED AT</Table.Column>
+          </Table.Header>
+          <Table.Body>
+            {displayedMembers.map((member, index) => (
+              <Table.Row key={index}>
+                <Table.Cell css={{ paddingRight: "4rem" }}>
+                  <User
+                    name={member.name}
+                    description={`${member.user.username}`}
+                    bordered
+                    color="blue"
+                    src={
+                      member.user.avatar
+                        ? `https://cdn.discordapp.com/avatars/${member.user.id}/${member.user.avatar}.png`
+                        : "https://www.techoptimum.org/logo-transparent.png"
+                    }
+                  />
+                </Table.Cell>
+                <Table.Cell css={{ paddingRight: "4rem" }}>
+                  {member.role}
+                </Table.Cell>
+                <Table.Cell>
+                  {new Date(member.joinedAt).toLocaleDateString()}
+                </Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table>
+      </div>
       <Pagination
         css={{
           margin: "0 auto",

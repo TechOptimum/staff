@@ -1,7 +1,6 @@
 import "react-notion/src/styles.css";
 import "prismjs/themes/prism-tomorrow.css";
 import { Text } from "@nextui-org/react";
-
 import { NotionRenderer } from "react-notion";
 
 export async function getStaticProps() {
@@ -16,7 +15,7 @@ export async function getStaticProps() {
   };
 }
 
-export default ({ blockMap }) => (
+const HRHandbook = ({ blockMap }) => (
   <div style={{ maxWidth: 768, color: "white !important", margin: "auto" }}>
     <Text>
         <h2>Human Resources Volunteer Handbook</h2>
@@ -24,3 +23,7 @@ export default ({ blockMap }) => (
     <NotionRenderer blockMap={blockMap} />
   </div>
 );
+
+HRHandbook.displayName = 'HRHandbook';
+
+export default HRHandbook;

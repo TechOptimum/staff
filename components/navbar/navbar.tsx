@@ -12,19 +12,24 @@ import {
  import { icons } from "./icons";
  import { useTheme as useNextTheme } from "next-themes";
  import { useTheme } from "@nextui-org/react";
+
  
  export const Nav = () => {
    const { setTheme } = useNextTheme();
    const { isDark, type } = useTheme();
-   const collapseItems = ["Main Website", "Dashboard", "Staff Handbook", "Your Team"];
+   const collapseItems = ["Main Website", "Dashboard", "Staff Handbook", "The Team", "Log Volunteer Hours"];
    return (
      <Navbar variant="sticky">
        <Navbar.Brand>
          <Navbar.Toggle aria-label="toggle navigation" showIn="xs" />
-         <Text as="a" href="/#" b color="inherit">
-           Tech Optimum Staff Home
+         <Link href="/">
+         <Text h3 color="inherit">
+           Tech Optimum Staff Portal 
          </Text>
+         </Link>
          <Navbar.Content
+         variant={"highlight-rounded"}
+         enableCursorHighlight
            hideIn="sm"
            css={{
              pl: "6rem",
@@ -33,7 +38,8 @@ import {
            <Navbar.Link  href="https://techoptimum.org">Main Website</Navbar.Link>
            <Navbar.Link  href="https://dashboard.techoptimum.org">Dashboard</Navbar.Link>
            <Navbar.Link  href="https://techoptimum.notion.site/Staff-Handbook-afb659f99c614c1baad74adc18bf2def">Staff Handbook</Navbar.Link>
-           <Navbar.Link  href="/team">Your Team</Navbar.Link>
+           <Navbar.Link  href="/team">The Team</Navbar.Link>
+           <Navbar.Link  href="/volunteer-hours">Log Volunteer Hours</Navbar.Link>
          </Navbar.Content>
        </Navbar.Brand>
  
@@ -60,12 +66,6 @@ import {
          </Navbar.CollapseItem>
        </Navbar.Collapse>
        <Navbar.Content>
-         <Navbar.Item>
-             <Button as="a" href="https://discord.gg/DstVc7tr4D" auto flat>
-               Discord
-             </Button>
-    
-         </Navbar.Item>
          <Navbar.Item hideIn={"xs"}>
            <Switch
              checked={isDark}
