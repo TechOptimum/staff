@@ -1,5 +1,21 @@
 import { useState, useEffect } from "react";
 import { Input, Table, Pagination, User, Grid, Text } from "@nextui-org/react";
+import { motion } from 'framer-motion';
+
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.25,
+    },
+  },
+};
+
+const item = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1 },
+};
 
 export default function Teamtable() {
   const [teamMembers, setTeamMembers] = useState([]);
@@ -43,8 +59,7 @@ export default function Teamtable() {
   };
 
   return (
-    <div
-      style={{
+<motion.div variants={container} initial="hidden" animate="show"      style={{
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -93,8 +108,8 @@ export default function Teamtable() {
           </Table.Header>
           <Table.Body>
             {displayedMembers.map((member, index) => (
-              <Table.Row key={index}>
-                <Table.Cell css={{ paddingRight: "4rem" }}>
+          <Table.Row key={index}>
+          <Table.Cell css={{ paddingRight: "4rem" }}>
                   <User
                   showSkeleton
                     name={member.name}
@@ -133,6 +148,6 @@ export default function Teamtable() {
         align="center"
         onChange={handlePaginationChange}
       />
-    </div>
+    </motion.div>
   );
 }

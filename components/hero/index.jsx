@@ -15,6 +15,22 @@ import { RiUserShared2Line } from "react-icons/ri";
 import { RiUserSharedLine } from "react-icons/ri";
 import { GiFireworkRocket} from "react-icons/gi";
 import { BsBriefcase} from "react-icons/bs";
+import { motion } from "framer-motion";
+
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.25,
+    },
+  },
+};
+
+const item = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1 },
+};
 
 const departments = [
   { 
@@ -56,7 +72,7 @@ const departments = [
 ];
 
 const DepartmentCard = ({ department }) => (
-  <Grid>
+  <motion.Grid variants={item}>
     <Card
       css={{
         mw: "200px",
@@ -64,6 +80,7 @@ const DepartmentCard = ({ department }) => (
         justifyContent: "center",
         transition: "transform 0.2s",
         "&:hover": { transform: "scale(1.05)" },
+        marginRight: "1rem",
       }}
       variant="bordered"
     >
@@ -101,11 +118,11 @@ const DepartmentCard = ({ department }) => (
         </Grid.Container>
       </Card.Body>
     </Card>
-  </Grid>
+  </motion.Grid>
 );
 
 const StaffHome = () => (
-  <div>
+  <motion.div variants={container} initial="hidden" animate="show">
     <Grid.Container
       css={{ marginTop: "2rem", maxW: "80%", margin: "auto !important" }}
       gap={2}
@@ -115,7 +132,7 @@ const StaffHome = () => (
         <DepartmentCard key={department.id} department={department} />
       ))}
     </Grid.Container>
-  </div>
+  </motion.div>
 );
 
 export default StaffHome;
