@@ -1,14 +1,18 @@
 html,
+/* styles/globals.css */
 body {
-   padding: 0;
-   margin: 0;
-   font-family: 'Inter', sans-serif;
-   color: white !important;
+  color: var(--geist-foreground);
 }
 
 * {
-   box-sizing: border-box;
-   color: white !important;
+  box-sizing: border-box;
+  color: var(--geist-primary);
+  
+
+}
 
 
+
+p {
+   color: var(--geist-primary);
 }

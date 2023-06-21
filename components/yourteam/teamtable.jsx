@@ -96,6 +96,7 @@ export default function Teamtable() {
               <Table.Row key={index}>
                 <Table.Cell css={{ paddingRight: "4rem" }}>
                   <User
+                  showSkeleton
                     name={member.name}
                     description={`${member.user.username}`}
                     bordered
