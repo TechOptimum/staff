@@ -74,14 +74,17 @@ const DepartmentCard = ({ department }) => (
         </Text>
         <Grid.Container justify="space-around" marginTop="1rem">
           <Button
+          as="a"
+          href={department.video}
             isHoverable
             is
             style={{ margin: "20px" }}
             auto
             color="secondary"
-            href="#"
             target="_blank"
             icon={<GiFireworkRocket />}
+            disabled={department.video === undefined}
+            
           >
            Onboarding 
           </Button>
