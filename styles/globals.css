@@ -6,7 +6,7 @@ body {
 
 * {
   box-sizing: border-box;
-  color: var(--geist-primary);
+  color: rgb(211, 211, 211);
   
 
 }
