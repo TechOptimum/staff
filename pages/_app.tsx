@@ -7,7 +7,9 @@ import {Nav} from '../components/navbar/navbar';
 const lightTheme = createTheme({
    type: 'light',
    theme: {
-      colors: {},
+      colors: {
+         h1: "#000000",
+      },
    },
 });
 
@@ -21,7 +23,7 @@ const darkTheme = createTheme({
 function MyApp({Component, pageProps}: AppProps) {
    return (
       <NextThemesProvider
-         defaultTheme="system"
+         defaultTheme="dark"
          attribute="class"
          value={{
             light: lightTheme.className,
