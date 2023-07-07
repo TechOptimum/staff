@@ -92,7 +92,7 @@ export const Nav = () => {
           />
         </Navbar.CollapseItem>
       </Navbar.Collapse>
-      <Navbar.Content>
+   {/*    <Navbar.Content>
         <Navbar.Item hideIn="xs">
           <div style={{ display: "flex", alignItems: "center" }}>
             {isDark ? (
@@ -106,7 +106,7 @@ export const Nav = () => {
             />
           </div>
         </Navbar.Item>
-      </Navbar.Content>
+      </Navbar.Content> */}
     </Navbar>
   );
 };
