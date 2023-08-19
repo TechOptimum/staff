@@ -5,7 +5,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const membersResponse = await fetch('https://slack.com/api/users.list', {
     headers: {
-      'Authorization': `Bearer xoxb-5675819568358-5720583605328-tvyeQCi0juI4C2tj8Jdo21GO`,
+      'Authorization': `Bearer ${process.env.SLACK_BEARER_TOKEN}`,
       'Content-Type': 'application/json'
     }
   });
@@ -16,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const userGroupsResponse = await fetch('https://slack.com/api/usergroups.list', {
     headers: {
-      'Authorization': `Bearer xoxb-5675819568358-5720583605328-tvyeQCi0juI4C2tj8Jdo21GO`,
+      'Authorization': `Bearer ${process.env.SLACK_BEARER_TOKEN}`,
       'Content-Type': 'application/json'
     }
   });
@@ -30,7 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   for (let group of userGroups) {
     const groupUsersResponse = await fetch(`https://slack.com/api/usergroups.users.list?usergroup=${group.id}`, {
       headers: {
-        'Authorization': `Bearer xoxb-5675819568358-5720583605328-tvyeQCi0juI4C2tj8Jdo21GO`,
+        'Authorization': `Bearer ${process.env.SLACK_BEARER_TOKEN}`,
         'Content-Type': 'application/json'
       }
     });
