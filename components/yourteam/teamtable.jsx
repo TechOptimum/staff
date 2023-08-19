@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Input, Table, Pagination, User, Grid, Text } from "@nextui-org/react";
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 
 const container = {
   hidden: { opacity: 0 },
@@ -41,17 +41,18 @@ export default function Teamtable() {
       .catch((error) => console.error("Error:", error));
   };
 
-  const displayedMembers = teamMembers.slice(
-    (page - 1) * rowsPerPage,
-    page * rowsPerPage
-  );
+  const displayedMembers = Array.isArray(teamMembers)
+    ? teamMembers.slice((page - 1) * rowsPerPage, page * rowsPerPage)
+    : [];
 
   const handleNameFilterChange = (event) => {
     setNameFilter(event.target.value);
+    setPage(1);
   };
 
   const handleRoleFilterChange = (event) => {
     setRoleFilter(event.target.value);
+    setPage(1);
   };
 
   const handlePaginationChange = (newPage) => {
@@ -59,7 +60,11 @@ export default function Teamtable() {
   };
 
   return (
-<motion.div variants={container} initial="hidden" animate="show"      style={{
+    <motion.div
+      variants={container}
+      initial="hidden"
+      animate="show"
+      style={{
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -103,31 +108,31 @@ export default function Teamtable() {
         >
           <Table.Header>
             <Table.Column>NAME </Table.Column>
+            <Table.Column>EMAIL </Table.Column>
             <Table.Column>ROLE </Table.Column>
-            <Table.Column>JOINED AT</Table.Column>
           </Table.Header>
           <Table.Body>
             {displayedMembers.map((member, index) => (
-          <Table.Row key={index}>
-          <Table.Cell css={{ paddingRight: "4rem" }}>
+              <Table.Row key={index}>
+                <Table.Cell css={{ paddingRight: "4rem" }}>
                   <User
-                  showSkeleton
+                    showSkeleton
                     name={member.name}
-                    description={`${member.user.username}`}
+                    description={`${member.real_name}`}
                     bordered
                     color="blue"
                     src={
-                      member.user.avatar
-                        ? `https://cdn.discordapp.com/avatars/${member.user.id}/${member.user.avatar}.png`
+                      member.image
+                        ? member.image
                         : "https://www.techoptimum.org/logo-transparent.png"
                     }
                   />
                 </Table.Cell>
                 <Table.Cell css={{ paddingRight: "4rem" }}>
-                  {member.role}
+                  {member.email}
                 </Table.Cell>
-                <Table.Cell>
-                  {new Date(member.joinedAt).toLocaleDateString()}
+                <Table.Cell css={{ paddingRight: "4rem" }}>
+                  {member.role}
                 </Table.Cell>
               </Table.Row>
             ))}

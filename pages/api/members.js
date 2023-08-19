@@ -1,65 +1,99 @@
-// pages/api/members.js
-
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(req, res) {
   const nameFilter = req.query.name;
-  const roleFilter = req.query.role;
-  const departmentFilter = req.query.department;
 
-  const rolesResponse = await fetch('https://discord.com/api/guilds/961850793202450432/roles', {
+ 
+  const membersResponse = await fetch('https://slack.com/api/users.list', {
     headers: {
-      'Authorization': `Bot MTA2NjkyNzY1NTA5NTYzNTk4OQ.GJlxu0.jUfMo_44i6L4pkTuJ9KJZyxhUEtXM8jzqEdAOU`,
+      'Authorization': `Bearer xoxb-5675819568358-5720583605328-tvyeQCi0juI4C2tj8Jdo21GO`,
       'Content-Type': 'application/json'
     }
   });
-
-  const rolesData = await rolesResponse.json();
-  const roles = Object.fromEntries(rolesData.map(role => [role.id, { name: role.name, position: role.position }]));
-
-  const membersResponse = await fetch('https://discord.com/api/guilds/961850793202450432/members?limit=1000', {
-    headers: {
-      'Authorization': `Bot MTA2NjkyNzY1NTA5NTYzNTk4OQ.GJlxu0.jUfMo_44i6L4pkTuJ9KJZyxhUEtXM8jzqEdAOU`,
-      'Content-Type': 'application/json'
-    }
-  });
-
   const membersData = await membersResponse.json();
+  if (!membersData.ok) {
+    return res.status(400).json({ error: membersData.error });
+  }
 
-  let members = membersData
-    .filter(member => member.user.id !== '1093067580471787521' && !member.user.bot)
+
+  const userGroupsResponse = await fetch('https://slack.com/api/usergroups.list', {
+    headers: {
+      'Authorization': `Bearer xoxb-5675819568358-5720583605328-tvyeQCi0juI4C2tj8Jdo21GO`,
+      'Content-Type': 'application/json'
+    }
+  });
+  const userGroupsData = await userGroupsResponse.json();
+  if (!userGroupsData.ok) {
+    return res.status(400).json({ error: userGroupsData.error });
+  }
+  const userGroups = userGroupsData.usergroups;
+
+
+  let groupUsersMap = {};
+  for (let group of userGroups) {
+    const groupUsersResponse = await fetch(`https://slack.com/api/usergroups.users.list?usergroup=${group.id}`, {
+      headers: {
+        'Authorization': `Bearer xoxb-5675819568358-5720583605328-tvyeQCi0juI4C2tj8Jdo21GO`,
+        'Content-Type': 'application/json'
+      }
+    });
+    const groupUsersData = await groupUsersResponse.json();
+    if (groupUsersData.ok) {
+      groupUsersMap[group.id] = groupUsersData.users;
+    }
+  }
+
+ 
+  let members = membersData.members
+    .filter(member => !member.is_bot && !member.deleted)
     .map(member => {
-      let highestRole = member.roles.reduce((highest, roleId) => {
-        const role = roles[roleId];
-        if (!role) return highest;
-        return (!highest || highest.position < role.position) ? role : highest;
-      }, null);
+      let role = "member";
+      for (let group of userGroups) {
+        if (groupUsersMap[group.id] && groupUsersMap[group.id].includes(member.id)) {
+          role = group.name;
+          break;
+        }
+      }
 
       return {
-        ...member,
-        role: highestRole ? highestRole.name : 'No role',
-        rolePosition: highestRole ? highestRole.position : -1,
-        name: member.nick ? member.nick : member.user.username,
-        joinedAt: member.joined_at,
-        department: member.department // Assuming you have a department property in your data
+        id: member.id,
+        name: member.name,
+        real_name: member.real_name,
+        email: member.profile.email,
+        role: role,
+        image: member.profile.image_192
       };
+    })
+    members.sort((a, b) => {
+      
+      const priorityOrder = ['Executives', 'Administration Team', 'admin'];
+    
+      
+      const aPriority = priorityOrder.indexOf(a.role);
+      const bPriority = priorityOrder.indexOf(b.role);
+    
+     
+      if (aPriority !== -1 && bPriority !== -1) {
+        return aPriority - bPriority;
+      }
+      
+      
+      if (aPriority !== -1) {
+        return -1;
+      }
+      if (bPriority !== -1) {
+        return 1;
+      }
+      
+     
+      return 0;
     });
+    
 
-  // Apply filters
   if (nameFilter) {
     members = members.filter(member => member.name.toLowerCase().includes(nameFilter.toLowerCase()));
   }
 
-  if (roleFilter) {
-    members = members.filter(member => member.role.toLowerCase().includes(roleFilter.toLowerCase()));
-  }
-
-  if (departmentFilter) {
-    members = members.filter(member => member.department.toLowerCase() === departmentFilter.toLowerCase());
-  }
-
-  // Sort members by role position in descending order
-  members = members.sort((a, b) => b.rolePosition - a.rolePosition);
 
   res.status(200).json(members);
 }
