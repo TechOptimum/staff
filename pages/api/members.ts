@@ -1,9 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 
-export default async function handler(req, res) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const nameFilter = req.query.name;
 
- 
   const membersResponse = await fetch('https://slack.com/api/users.list', {
     headers: {
       'Authorization': `Bearer xoxb-5675819568358-5720583605328-tvyeQCi0juI4C2tj8Jdo21GO`,
@@ -14,7 +13,6 @@ export default async function handler(req, res) {
   if (!membersData.ok) {
     return res.status(400).json({ error: membersData.error });
   }
-
 
   const userGroupsResponse = await fetch('https://slack.com/api/usergroups.list', {
     headers: {
@@ -27,7 +25,6 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: userGroupsData.error });
   }
   const userGroups = userGroupsData.usergroups;
-
 
   let groupUsersMap = {};
   for (let group of userGroups) {
@@ -43,9 +40,8 @@ export default async function handler(req, res) {
     }
   }
 
- 
   let members = membersData.members
-    .filter(member => !member.is_bot && !member.deleted)
+    .filter(member => !member.is_bot && !member.deleted && member.name !== "slackbot")
     .map(member => {
       let role = "member";
       for (let group of userGroups) {
@@ -63,37 +59,31 @@ export default async function handler(req, res) {
         role: role,
         image: member.profile.image_192
       };
-    })
-    members.sort((a, b) => {
-      
-      const priorityOrder = ['Executives', 'Administration Team', 'admin'];
-    
-      
-      const aPriority = priorityOrder.indexOf(a.role);
-      const bPriority = priorityOrder.indexOf(b.role);
-    
-     
-      if (aPriority !== -1 && bPriority !== -1) {
-        return aPriority - bPriority;
-      }
-      
-      
-      if (aPriority !== -1) {
-        return -1;
-      }
-      if (bPriority !== -1) {
-        return 1;
-      }
-      
-     
-      return 0;
     });
+
+  members.sort((a, b) => {
+    const priorityOrder = ['Executives', 'Administration Team', 'admin'];
+    const aPriority = priorityOrder.indexOf(a.role);
+    const bPriority = priorityOrder.indexOf(b.role);
     
+    if (aPriority !== -1 && bPriority !== -1) {
+      return aPriority - bPriority;
+    }
+    
+    if (aPriority !== -1) {
+      return -1;
+    }
+    if (bPriority !== -1) {
+      return 1;
+    }
+    
+    return 0;
+  });
 
   if (nameFilter) {
-    members = members.filter(member => member.name.toLowerCase().includes(nameFilter.toLowerCase()));
+    const searchString = Array.isArray(nameFilter) ? nameFilter[0] : nameFilter;
+    members = members.filter(member => member.name.includes(searchString));
   }
-
 
   res.status(200).json(members);
 }
